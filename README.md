@@ -1,3 +1,4 @@
+<img width="1825" height="882" alt="Screenshot 2026-10-27 150051" src="https://github.com/user-attachments/assets/d3f14f3b-2984-4876-9557-0502071dd0aa" />
 # 🛡️ OpportunityShield
 
 **An Intelligent Platform to Detect Fake Internships, Scholarships, and Hackathons**
