@@ -121,3 +121,7 @@ in your workflow, and be ready to explain any part of the code.
 ## License
 
 MIT, see [LICENSE](LICENSE).
+##Dashboard
+<img width="1892" height="1008" alt="Screenshot 2026-10-27 153103" src="https://github.com/user-attachments/assets/d4f838cf-109a-4272-9cb3-3842058f1a2c" />
+<img width="1903" height="1002" alt="Screenshot 2026-10-27 153035" src="https://github.com/user-attachments/assets/b87be81d-e72e-4c49-8bfb-f8abd2b8c900" />
+
