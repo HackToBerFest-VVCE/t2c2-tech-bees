@@ -1,86 +1,123 @@
 # 🛡️ OpportunityShield
 
 **An Intelligent Platform to Detect Fake Internships, Scholarships, and Hackathons**
+*Spot fake opportunities. Stay safe.*
 
-*Spot Fake Opportunities. Stay Safe.*
+Paste an opportunity link or its announcement text and get an **explainable** Low / Medium / High risk score (0-100) with the exact evidence behind it,
+a per-category breakdown, recommended actions, a searchable history and community reporting.
 
----
+> **The score is guidance, not proof.** A high score does not prove fraud and a low score does not prove an opportunity is genuine. Always verify through official channels.
 
-## Overview
+Team **Tech Bees** · Hacktoberfest × VectorFlow 2026 · Track 2, Challenge B
 
-OpportunityShield is a web-based security platform that helps students identify potentially fraudulent internships, scholarships, hackathons, and other educational opportunities **before** they apply.
+## What is implemented
 
-Users can submit an opportunity URL or paste its announcement text. The system analyses suspicious indicators and returns an explainable risk assessment.
-
-## Key Features
-
-- **Check URL / Check Text**: analyse an opportunity link or pasted announcement text
-- **Explainable Risk Score**: Low, Medium or High risk (score out of 100) with the reasons behind it
-- **Risk Breakdown**: contribution of each factor (payment request, suspicious domain, personal data request, unrealistic claims, etc.)
-- **Recommended Actions**: verification guidance for the student
-- **Community Reporting**: report suspicious opportunities to a shared database
-- **Dashboard**: recent checks, history, and safety tips
-
-## What We Detect
-
-| Warning sign | Example |
+| Area | Details |
 |---|---|
-| Unusual payment requests | Registration or "processing" fees |
-| Misleading domains | Look-alike or suspicious URLs |
-| Urgency tactics | "Apply in the next 2 hours!" |
-| Sensitive data requests | Bank/financial details, ID documents |
-| Unrealistic promises | High stipend, no skills required |
-| Unverifiable organisations | No official website or contact details |
+| URL analysis | Shorteners, raw/private IPs, punycode look-alikes, brand impersonation, opportunity-keyword + hyphen/year domains, subdomain tricks, risky TLDs, plain HTTP, embedded credentials. **Links are never fetched or opened.** |
+| Text analysis | Advance fees, informal payment channels, OTP/password/PIN, bank and ID requests, guaranteed selection, unrealistic stipends, urgency, WhatsApp/Telegram-only contact, free-mail contacts, unverifiable claims. Matched text is shown as evidence; negations ("no registration fee") are respected. |
+| Scoring | Deterministic weighted rules, per-group caps (30/25/20/15/10), thresholds Low 0-29 / Medium 30-59 / High 60-100. See [`docs/SCORING_METHODOLOGY.md`](docs/SCORING_METHODOLOGY.md). |
+| Dashboard | Layout based on the supplied design: sidebar, Check URL / Check Text tabs, risk meter, *Why is it flagged?*, Opportunity Details, Risk Breakdown, Recommended Actions, Recent Checks, Safety Tips. |
+| History / Reports / Profile | Search + filter + detail view; report form with duplicate and rate-limit handling and "unverified allegation" labelling; profile with storage status and confirmed reset. |
+| Storage | Local JSON file by default (works offline, no accounts). Optional Supabase/PostgreSQL with migration + RLS. |
+| Optional | Google Safe Browsing lookup, only if `SAFE_BROWSING_API_KEY` is set. Otherwise the UI states that no external check was performed. |
 
-## How It Works
+**Not implemented (roadmap):** user accounts/login, machine-learning models, web crawling, image/visual analysis, browser extension, WHOIS/domain-age checks, moderator workflow.
+This prototype is a transparent **rule-based** engine, not ML. See [`docs/PRESENTATION.md`](docs/PRESENTATION.md) for the implemented-vs-planned table.
 
-1. **URL validation**: checks domain structure and legitimacy signals
-2. **Rule-based risk scoring**: weighted scoring of detected red flags
-3. **Text pattern analysis**: scans announcement text for scam language
-4. **Reported-opportunities database**: cross-checks against community reports
+## Verification status
 
-## Tech Stack
+| Check | Result |
+|---|---|
+| `npm run lint` | ✅ passes (run in the build environment) |
+| `npm run typecheck` | ✅ passes |
+| `npm test` (Vitest, 95 tests) | ✅ passes |
+| `npm run build` (Next.js production build) | ✅ passes |
+| HTTP smoke test of the production server (all pages 200; analyze, history, reports, duplicates, rate limit, CSRF/content-type rejection, reset) | ✅ done with `curl` |
+| Playwright end-to-end tests (`e2e/`) | ⚠️ **written but NOT run**: no browser could be installed in the build environment. Run `npm run test:e2e` yourself. |
+| Visual match of the UI to the design screenshot | ⚠️ **not visually inspected** (no browser available). CSS compiles and all expected classes are present; please check it in your browser. |
+| Supabase persistence against a live project | ⚠️ **not tested** (needs your credentials) |
+| Google Safe Browsing | ⚠️ **tested with mocked responses only** |
+| Deployment to Vercel / push to GitHub | ❌ **not done**: requires your accounts. See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md). |
 
-> Update as the project evolves.
+## Run it on Windows (PowerShell)
 
-- Frontend: *(e.g. React / HTML, CSS, JS)*
-- Backend: *(e.g. Python Flask / Node.js)*
-- Database: *(e.g. SQLite / MongoDB)*
-- Dev tooling: GitHub Copilot (code generation, test cases, debugging, code quality)
+1. Install Node.js 22 LTS (>= 20.9 works): `winget install OpenJS.NodeJS.LTS`, then **close and reopen PowerShell**. Check: `node -v`.
+2. Extract `opportunityshield-hackathon.zip` and open the folder in VS Code:
 
-## Getting Started
-
-```bash
-# Clone the repository
-git clone <repo-url>
-cd opportunityshield
-
-# Install dependencies
-# (add commands here once the code is added)
-
-# Run the app
-# (add commands here)
+```powershell
+Expand-Archive .\opportunityshield-hackathon.zip -DestinationPath .
+cd .\opportunityshield
+code .
 ```
 
-## Roadmap
+3. In the VS Code terminal (Ctrl+`):
 
-- [x] Project idea and UI design
-- [ ] URL validation module
-- [ ] Rule-based scoring engine
-- [ ] Text analysis module
-- [ ] Reporting and database
-- [ ] Dashboard UI
-- [ ] Integration with external threat-intelligence services (future)
+```powershell
+npm ci                         # installs the exact versions from package-lock.json
+Copy-Item .env.example .env.local   # optional: the app runs without any keys
+npm run dev
+```
 
-## ⚠️ Disclaimer
+4. Open http://localhost:3000. Click a demo scenario (e.g. *Internship asking for a fee*): you should see **High Risk 78/100**.
 
-Risk assessments are **guidance only** and not a guarantee that an opportunity is genuine or fraudulent. Always verify through official channels before sharing personal information or making any payment.
+Production mode (recommended for the live demo, faster): `npm run build; npm start`.
 
-## Team
+### Quality checks
 
-*Tech bees*
-Bhoomika and Ayesha 
+```powershell
+npm run lint
+npm run typecheck
+npm test
+npm run build
+npx playwright install chromium   # once
+npm run test:e2e                  # builds, starts on port 3100 with isolated data
+npm run check                     # lint + typecheck + unit tests + build
+```
 
----
+### Optional: Supabase and Safe Browsing
 
-**Think. Verify. Apply.** Safer Students, Stronger Futures.
+Put values in `.env.local` (never commit it). See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) for running the SQL migration in `supabase/migrations/`.
+After connecting, verify: Profile shows "Supabase (cloud database)", run a scan, and see the row in the `analyses` table.
+
+### Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| `npm` / `node` not recognised | Reopen PowerShell after installing Node. |
+| Port 3000 busy | `npm run dev -- -p 3001` |
+| `EACCES`/`EPERM` on install | Move the folder out of OneDrive/Downloads, e.g. `C:\dev\opportunityshield`, then `Remove-Item node_modules -Recurse -Force; npm ci`. |
+| Scripts disabled in PowerShell | `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` |
+| Stale build/odd errors | `Remove-Item .next -Recurse -Force; npm run dev` |
+| "Could not save" / storage errors | Make sure the folder is writable (local mode writes `.data/`), or check Supabase URL/key and that the migration ran. |
+| History empty after restart on Vercel | Without Supabase, Vercel's disk is temporary. Use Supabase or run locally. |
+
+## Project structure
+
+```
+app/            Next.js pages (/, /check, /history, /reported-scams, /profile, /methodology) and API routes
+components/     Dashboard UI components
+lib/            analysis engine (rules, scoring, analyzer), validation, storage, security helpers, demo data
+supabase/       SQL migration + optional seed
+tests/          Vitest unit/integration tests      e2e/   Playwright tests
+docs/           Architecture, API, scoring methodology, demo script, deployment, presentation notes
+```
+
+## Security notes
+
+Strict server-side validation, no URL fetching (no SSRF surface), CSRF/origin and content-type checks, rate limiting, CSP and security headers, PII redaction in reports,
+RLS-enabled tables with service-role-only access, no secrets in the repo (`.env*` ignored). **There is no real authentication yet**: demo-mode history is tied to an
+anonymous httpOnly cookie. Details in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+
+## Demo data
+
+All demo organisations are fictional and use reserved domains (`.example`), so they can never accuse a real organisation. Demo entries are labelled **Demo data** and are scored by the same engine as normal submissions.
+
+## AI-assistance disclosure
+
+This codebase was generated with the help of an AI assistant (Claude) in a single session. If you are entering the *GitHub Copilot* challenge, only state Copilot usage that actually happened
+in your workflow, and be ready to explain any part of the code.
+
+## License
+
+MIT, see [LICENSE](LICENSE).
