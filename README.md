@@ -1,4 +1,4 @@
-<img width="1825" height="882" alt="Screenshot 2026-10-27 150051" src="https://github.com/user-attachments/assets/d3f14f3b-2984-4876-9557-0502071dd0aa" />
+
 # 🛡️ OpportunityShield
 
 **An Intelligent Platform to Detect Fake Internships, Scholarships, and Hackathons**
@@ -125,4 +125,5 @@ MIT, see [LICENSE](LICENSE).
 ##Dashboard
 <img width="1892" height="1008" alt="Screenshot 2026-10-27 153103" src="https://github.com/user-attachments/assets/d4f838cf-109a-4272-9cb3-3842058f1a2c" />
 <img width="1903" height="1002" alt="Screenshot 2026-10-27 153035" src="https://github.com/user-attachments/assets/b87be81d-e72e-4c49-8bfb-f8abd2b8c900" />
+<img width="1825" height="882" alt="Screenshot 2026-10-27 150051" src="https://github.com/user-attachments/assets/08301e64-edf3-4e75-96bf-b439dceeb51d" />
 
